@@ -9,9 +9,10 @@ from django.test import Client
 
 
 class AdminSiteTests(TestCase):
-    """Tests for Django admin,"""
+    """Tests for Django admin."""
 
     def setUp(self):
+        """Create user and client"""
         self.client = Client()
         self.admin_user = get_user_model().objects.create_superuser(
             email='admin@example.com',
