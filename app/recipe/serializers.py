@@ -9,12 +9,14 @@ from core.models import (
     Ingredient,
 )
 
+
 class IngredientSerializer(serializers.ModelSerializer):
     """Serializer for ingredients."""
     class Meta:
         model = Ingredient
         fields = ['id', 'name']
         read_only_fields = ['id']
+
 
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tags."""
@@ -23,10 +25,12 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
 
+
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for recipes."""
     tags = TagSerializer(many=True, required=False)
     ingredients = IngredientSerializer(many=True, required=False)
+
     class Meta:
         model = Recipe
         fields = [
@@ -49,6 +53,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 **tag,
             )
             recipe.tags.add(tag_obj)
+
     def _get_or_create_ingredient(self, ingredients, recipe):
         """Handle getting or creating ingredients."""
         auth_user = self.context['request'].user
@@ -58,13 +63,14 @@ class RecipeSerializer(serializers.ModelSerializer):
                 **ingredient,
             )
             recipe.ingredients.add(ingredient_obj)
+
     def create(self, validated_data):
         """Create a recipe."""
         tags = validated_data.pop('tags', [])
         ingredients = validated_data.pop('ingredients', [])
         recipe = Recipe.objects.create(**validated_data)
         self._get_or_create_tags(tags, recipe)
-        self._get_or_create_ingredient(ingredients,recipe)
+        self._get_or_create_ingredient(ingredients, recipe)
         auth_user = self.context['request'].user
         for tag in tags:
             tag_obj, created = Tag.objects.get_or_create(
@@ -89,6 +95,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
 class RecipeDetailSerializer(RecipeSerializer):
     """Serializer for recipe detail view."""

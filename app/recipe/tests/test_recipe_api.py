@@ -33,9 +33,11 @@ def detail_url(recipe_id):
     """Create and return a recipe detail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
 
+
 def image_upload_url(recipe_id):
     """Create and return an image detail URL."""
     return reverse('recipe:recipe-upload-image', args=[recipe_id])
+
 
 def create_recipe(user, **params):
     """Create and return a sample recipe."""
@@ -75,7 +77,10 @@ class PrivateRecipeApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email='user@example.com', password='testpass123')
+        self.user = create_user(
+            email='user@example.com',
+            password='testpass123'
+        )
 
         self.client.force_authenticate(self.user)
 
@@ -193,9 +198,10 @@ class PrivateRecipeApiTests(TestCase):
                 user=self.user,
             ).exists()
             self.assertTrue(exists)
+
     def test_create_recipe_with_existing_tags(self):
         """Test creating a recipe with existing tag."""
-        tag_indian = Tag.objects.create(user=self.user, name='Indian')
+        Tag.objects.create(user=self.user, name='Indian')
         payload = {
             'title': 'Pongal',
             'time_minutes': 60,
@@ -372,13 +378,14 @@ class PrivateRecipeApiTests(TestCase):
         r3 = create_recipe(user=self.user, title='Pancakes')
 
         params = {'ingredients': f'{ing1.id}, {ing2.id}'}
-        res =self.client.get(RECIPES_URL, params)
+        res = self.client.get(RECIPES_URL, params)
         s1 = RecipeSerializer(r1)
         s2 = RecipeSerializer(r2)
         s3 = RecipeSerializer(r3)
         self.assertIn(s1.data, res.data)
         self.assertIn(s2.data, res.data)
         self.assertNotIn(s3.data, res.data)
+
 
 class ImageUploadTests(TestCase):
     """Tests for the image upload API."""
